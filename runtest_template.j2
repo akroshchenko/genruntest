@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -o xtrace
+
+case $1 in
+{% for py2_package in py2_packages%}
+     {{ py2_package }})
+        echo "Testing $1"
+        python -c "import {{ module_name }}"
+        EC=$?
+        ;;
+{% endfor %}
+{% for py3_package in py3_packages%}
+     {{ py3_package }}))
+        echo "Testing $1"
+        python3 -c "import {{ module_name }}"
+        EC=$?
+        ;;
+{% endfor %}
+    *)
+        echo "Test not defined for $1"
+        EC=0
+        ;;
+esac
+
+exit $EC
