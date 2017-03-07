@@ -1,6 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
 import argparse
 import os
 import shutil
+import sys
 import tarfile
 import tempfile
 import urllib
@@ -9,32 +14,24 @@ import jinja2
 import pkg_mastertool as pkglib
 
 
-# def check_arguments(args):
-#     if args.py_package is None:
-#         if args.specfile is None:
-#             if
-#         elif args.control is None:
-#             raise AttributeError('Need specify either flag -p or (-s or -cl)')
-
-
-def find_control_spec_file():
-    file = {'rpm':[],'deb':[]}
-    for root, dirname, filename in os.walk(os.getcwd()):
-        for item in filename:
-            if item.endwith('.spec'):
-                file['rpm'].append(os.path.join(root,filename))
-            if item == "control":
-                file['deb'].append(os.path.join(root, filename))
-    return file
+#def find_control_spec_file():
+#    file = {'rpm':[],'deb':[]}
+#    for root, dirname, filename in os.walk(os.getcwd()):
+#        for item in filename:
+#            if item.endwith('.spec'):
+#                file['rpm'].append(os.path.join(root,filename))
+#            if item == "control":
+#                file['deb'].append(os.path.join(root, filename))
+#    return file
 
 
 def process_control_file(path=None):
     pass
 
 
-def process_spec_file(path=None):
-    if path is None:
-        path = find_control_spec_file()['rpm']
+def process_spec_file(path):
+#    if path is None:
+#        path = find_control_spec_file()['rpm']
     rpm_src = pkglib.RPMSrc(path)
     packages = rpm_src.get_packs()
     py2_packages = packages[:]
@@ -72,7 +69,7 @@ def main():
     parser.add_argument(
         '-s', '--specfile', dest='specfile', help='path to the specfile')
     parser.add_argument(
-        '-c', '--control', dest='control', help='path to the control file')
+        '-cl', '--control', dest='control', help='path to the control file')
     parser.add_argument(
         '-m', '--module_name', dest='module_name', help='name of python module')
     #To use this parametr need to find out hot to receive URL for downloading (from PyPy)
@@ -82,9 +79,13 @@ def main():
         '-u', '--url', dest='url', help='URL for downloading target PyPackage')
     args = parser.parse_args()
 
-
+    # Test
     args.url='https://pypi.python.org/packages/00/dd/dc22f8d06ee1f16788131954fc69bc4438f8d0125dd62419a43b86383458/wrapt-1.10.8.tar.gz'
     args.specfile = 'test_spec.spec'
+
+    if args.specfile is None or args.control is None:
+        print("Path to spec or control file does not set")
+        sys.exit()
 
     process_spec_file(args.specfile)
 
